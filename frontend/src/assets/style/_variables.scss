@@ -3,10 +3,11 @@
  */
 
 // メディアクエリ
-$pc: 'only screen and (min-width: 768px) ';
-$sp: 'not all and (min-width: 768px) ';
+$pc: "only screen and (min-width: 768px) ";
+$sp: "not all and (min-width: 768px) ";
 
 // 使用するカラー
 $colorWhite: #fff;
 $colorBlack: #333;
 $colorRed: #ff0000;
+$colorPurple: #6c40e8;
