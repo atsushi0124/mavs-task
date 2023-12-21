@@ -1,7 +1,14 @@
 <script setup lang="ts">
-import { useUserStore } from '~/store/user'
+import { useUserStore } from "~/store/user";
 
-const userStore = useUserStore()
+const userStore = useUserStore();
+
+const isTopPage = ref(false); // トップページかどうかを判定するリアクティブな変数
+
+onMounted(() => {
+  // 例としてmountedフック内でURLをチェックし、トップページかどうかを判定
+  isTopPage.value = window.location.pathname === "/"; // ルートパスがトップページであるかどうか
+});
 </script>
 
 <template>
@@ -11,14 +18,25 @@ const userStore = useUserStore()
       <h1>
         <NuxtLink to="/">メモアプリ</NuxtLink>
       </h1>
-      <div>
+      <div class="signin">
+        <img
+          v-if="userStore.isLoggedIn"
+          src="../assets/images/delete.svg"
+          alt="削除アイコン"
+        />
         <div v-if="userStore.isLoggedIn">
           <p>ようこそ！<br />{{ userStore.email }}さん</p>
-          <button type="button" @click="userStore.logout()">ログアウト</button>
         </div>
-        <div v-else>
+        <div v-if="!userStore.isLoggedIn">
           <NuxtLink to="/signin">サインイン</NuxtLink>
         </div>
+        <button
+          v-if="userStore.isLoggedIn"
+          type="button"
+          @click="userStore.logout()"
+        >
+          ログアウト
+        </button>
       </div>
     </div>
   </header>
@@ -30,6 +48,21 @@ const userStore = useUserStore()
     display: flex;
     justify-content: space-between;
     align-content: center;
+    align-items: center;
+    width: 90%;
+    margin: 30px auto;
+  }
+}
+.signin {
+  display: flex;
+  justify-content: flex-end;
+  width: 40%;
+  img {
+    height: 40px;
+    margin-right: 10px;
+  }
+  button {
+    height: 30px;
   }
 }
 </style>
