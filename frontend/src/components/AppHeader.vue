@@ -50,7 +50,8 @@ onMounted(() => {
     align-content: center;
     align-items: center;
     width: 90%;
-    margin: 30px auto;
+    padding: 30px 0;
+    margin: 0 auto;
   }
 }
 .signin {

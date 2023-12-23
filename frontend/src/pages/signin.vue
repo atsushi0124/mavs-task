@@ -139,7 +139,9 @@ useHead({
     position: absolute;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, 35%);
+    transform: translate(-50%, -15%);
+    -webkit-transform: translate(-50%, 25%);
+    -ms-transform: translate(-50%, -50%);
   }
 }
 
