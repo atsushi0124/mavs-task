@@ -7,15 +7,33 @@ const router = express.Router();
 /**
  * メモ新規登録
  */
-router.get('/createArticle', authenticate, async (req, res, next) => {
+router.post('/createArticle', authenticate, async (req, res, next) => {
   try {
-    let body = {};
+    // リクエストパラメーター
+    const { title, content, created_at } = req.body;
+
+    //メモの存在チェック
+    const resSearchDesc = await userService.searchUser('', title, content, '', created_at, '');
+
+    // 返却用データを生成
+    const body = {
+      title: title,
+      content: created_at,
+    };
 
     res.status(200).json(body);
   } catch (error) {
     console.error(error);
     res.status(500).json({});
   }
+  // try {
+  //   let body = {};
+
+  //   res.status(200).json(body);
+  // } catch (error) {
+  //   console.error(error);
+  //   res.status(500).json({});
+  // }
 });
 
 export default router;

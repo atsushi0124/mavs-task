@@ -2,6 +2,7 @@
 import process from 'process';
 import Sequelize from 'sequelize';
 import config from '../config/config.json' assert { type: 'json' };
+// import config from '../config/config.json' assert { type: 'json' };
 import Users from './users.js';
 import Articles from './articles.js';
 const db = {};
