@@ -2,6 +2,7 @@
 import { useField, useForm } from "vee-validate";
 import { useUserStore } from "~/store/user";
 import { SignInResponse } from "~/types/api";
+import { addMemo } from "~/pages/createArticle.vue";
 </script>
 
 <template>
@@ -11,8 +12,14 @@ import { SignInResponse } from "~/types/api";
     </div>
     <div class="center">
       <!-- メモの追加ボタン -->
-      <div class="memoAdd"></div>
+      <NuxtLink to="/createArticle" class="memoAddLink">
+        <div class="memoAdd"></div>
+      </NuxtLink>
       <div class="memoDB">
+        <div class="page">
+          <!-- <List :memo="memos" /> -->
+          <!-- <Memo v-for="memo in memos" :key="memo" :memo="memo" /> -->
+        </div>
         <!-- メモをDBから持ってきてタイトル/内容/日付を表示 -->
         <div class="memo">
           <p class="description">
@@ -79,9 +86,6 @@ import { SignInResponse } from "~/types/api";
         </div>
       </div>
     </div>
-    <div class="right">
-      <p>right</p>
-    </div>
   </div>
 </template>
 
@@ -106,6 +110,9 @@ import { SignInResponse } from "~/types/api";
   justify-content: flex-start;
 
   // メモの追加ボタンの指定
+  .memoAddLink {
+    height: 140px;
+  }
   .memoAdd {
     width: 160px;
     height: 140px;

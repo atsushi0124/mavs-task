@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useUserStore } from "~/store/user";
 
+// ユーザーストアを取得
 const userStore = useUserStore();
 
 const isTopPage = ref(false); // トップページかどうかを判定するリアクティブな変数
@@ -18,25 +19,18 @@ onMounted(() => {
       <h1>
         <NuxtLink to="/">メモアプリ</NuxtLink>
       </h1>
-      <div class="signin">
-        <img
-          v-if="userStore.isLoggedIn"
-          src="../assets/images/delete.svg"
-          alt="削除アイコン"
-        />
-        <div v-if="userStore.isLoggedIn">
-          <p>ようこそ！<br />{{ userStore.email }}さん</p>
+      <div v-if="userStore.isLoggedIn" class="signin">
+        <div class="delToggleBtn">
+          <img src="../assets/images/delete.svg" alt="削除アイコン" />
+          <button>選択</button>
+          <button>キャンセル</button>
+          <button>削除</button>
         </div>
-        <div v-if="!userStore.isLoggedIn">
-          <NuxtLink to="/signin">サインイン</NuxtLink>
-        </div>
-        <button
-          v-if="userStore.isLoggedIn"
-          type="button"
-          @click="userStore.logout()"
-        >
-          ログアウト
-        </button>
+        <p>ようこそ！<br />{{ userStore.email }}さん</p>
+        <button type="button" @click="userStore.logout()">ログアウト</button>
+      </div>
+      <div v-else="!userStore.isLoggedIn">
+        <NuxtLink to="/signin">サインイン</NuxtLink>
       </div>
     </div>
   </header>
