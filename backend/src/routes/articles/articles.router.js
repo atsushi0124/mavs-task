@@ -12,13 +12,15 @@ router.post('/createArticle', authenticate, async (req, res, next) => {
     // リクエストパラメーター
     const { title, content, created_at } = req.body;
 
-    //メモの存在チェック
-    const resSearchDesc = await userService.searchUser('', title, content, '', created_at, '');
+    // 新しい記事を作成
+    const newArticle = await articleService.createArticle(title, content, created_at);
 
     // 返却用データを生成
     const body = {
-      title: title,
-      content: created_at,
+      id: newArticle.id,
+      title: newArticle.title,
+      content: newArticle.content,
+      created_at: newArticle.created_at,
     };
 
     res.status(200).json(body);
@@ -26,14 +28,6 @@ router.post('/createArticle', authenticate, async (req, res, next) => {
     console.error(error);
     res.status(500).json({});
   }
-  // try {
-  //   let body = {};
-
-  //   res.status(200).json(body);
-  // } catch (error) {
-  //   console.error(error);
-  //   res.status(500).json({});
-  // }
 });
 
 export default router;

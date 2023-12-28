@@ -25,6 +25,17 @@ class ArticleService {
     };
     return resData;
   }
+
+  // title,content,取得し、newArticleに格納
+  async createArticle(title, content, created_at) {
+    const newArticle = await db.articles.create({
+      title,
+      content,
+      created_at,
+    });
+
+    return newArticle;
+  }
   /**
    * 記事情報取得
    * @param user_id

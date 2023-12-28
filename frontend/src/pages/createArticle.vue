@@ -1,18 +1,86 @@
 <script setup lang="ts">
 // Vue 3のComposition APIの一部であるref関数をインポート
 import { ref } from "vue";
+import { AddMemoResponse } from "~/types/api";
+import { useField, useForm } from "vee-validate";
+import { useUserStore } from "~/store/user";
+
+// 環境変数（.env参照）からAPIのベースURLを取得
+const $config = useRuntimeConfig();
+const apiBaseUrl = $config.public.apiBaseUrl;
+// ユーザーストアを取得
+const userStore = useUserStore();
 
 // refを使用して、memoTitleとmemoDescという名前のリアクティブな参照を作成
 // これらはそれぞれinputとtextareaの値を保持します
 const memoTitle = ref("");
 const memoDesc = ref("");
 
+// フォームの設定
+const { handleSubmit, isSubmitting } = useForm({
+  // バリデーションルール
+  validationSchema: {
+    email(value: string) {
+      // 必須
+      if (!value) {
+        return "タイトルを入力してください";
+      }
+      return true;
+    },
+    password(value: string) {
+      if (!value) {
+        return "内容を入力してください";
+      }
+      return true;
+    },
+  },
+});
+
+// フィールドの値とエラーメッセージを取得
+// const { value: memoTitle, errorMessage: emailErrorMessage } =
+//   useField("memoTitle");
+// const { value: pmemoDesc, errorMessage: passwordErrorMessage } =
+//   useField("memoDesc");
+
 // addMemoという名前の関数を定義
 // この関数は、ユーザーが保存ボタンをクリックしたときに実行されます
-const addMemo = () => {
+const addMemo = handleSubmit(async () => {
+  try {
+    console.log(memoTitle.value, memoDesc.value);
+    // ログインAPIを呼び出す -> /backend/src/routes/auth/auth.router.tsを参照
+    const { data } = await useFetch<AddMemoResponse>(
+      `${apiBaseUrl}/articles/createArticle`,
+      {
+        method: "POST",
+        body: {
+          title: memoTitle.value,
+          content: memoDesc.value,
+        },
+      }
+    );
+    console.log(data);
+
+    // // レスポンスのデータを取得（ref値）
+    // const response = data.value;
+    // // トークンの有無でログインできたか判断
+    // const hasToken = response && !!response.token;
+    // if (hasToken) {
+    //   // 成功の場合はトークンを保存
+    //   userStore.token = response.token;
+    //   userStore.email = response.email;
+    //   // トップページに遷移
+    //   $router.push("/");
+    // } else {
+    //   // 失敗の場合はフィールドをクリア
+    //   email.value = "";
+    //   password.value = "";
+    // }
+  } catch (error) {
+    console.log(error);
+  }
+
   // memoTitleとmemoDescの現在の値をコンソールに出力
-  console.log(memoTitle.value, memoDesc.value);
-};
+});
 
 // タイトルを入力後、Enterキーを押すと次のテキストエリアにフォーカスを移動
 const handleEnter = (event: KeyboardEvent) => {
@@ -32,7 +100,13 @@ const handleEnter = (event: KeyboardEvent) => {
         </NuxtLink>
         <!-- 保存ボタンのクリックイベントにaddMemo関数をバインド -->
         <!-- .prevent修飾子は、クリックイベントのデフォルトの動作（この場合、フォームの送信）を防ぐ -->
-        <button @click.prevent="addMemo" class="save__btn">保存</button>
+        <button
+          @click.prevent="addMemo"
+          class="save__btn"
+          :disabled="isSubmitting"
+        >
+          保存
+        </button>
       </div>
 
       <form>
