@@ -2,7 +2,6 @@
 import { useField, useForm } from "vee-validate";
 import { useUserStore } from "~/store/user";
 import { SignInResponse } from "~/types/api";
-import { addMemo } from "~/pages/createArticle.vue";
 </script>
 
 <template>
