@@ -37,10 +37,10 @@ const { handleSubmit, isSubmitting } = useForm({
 });
 
 // フィールドの値とエラーメッセージを取得
-// const { value: memoTitle, errorMessage: emailErrorMessage } =
-//   useField("memoTitle");
-// const { value: pmemoDesc, errorMessage: passwordErrorMessage } =
-//   useField("memoDesc");
+const { value: memoTitle, errorMessage: emailErrorMessage } =
+  useField("memoTitle");
+const { value: pmemoDesc, errorMessage: passwordErrorMessage } =
+  useField("memoDesc");
 
 // addMemoという名前の関数を定義
 // この関数は、ユーザーが保存ボタンをクリックしたときに実行されます
@@ -59,22 +59,6 @@ const addMemo = handleSubmit(async () => {
       }
     );
     console.log(data);
-
-    // // レスポンスのデータを取得（ref値）
-    // const response = data.value;
-    // // トークンの有無でログインできたか判断
-    // const hasToken = response && !!response.token;
-    // if (hasToken) {
-    //   // 成功の場合はトークンを保存
-    //   userStore.token = response.token;
-    //   userStore.email = response.email;
-    //   // トップページに遷移
-    //   $router.push("/");
-    // } else {
-    //   // 失敗の場合はフィールドをクリア
-    //   email.value = "";
-    //   password.value = "";
-    // }
   } catch (error) {
     console.log(error);
   }
