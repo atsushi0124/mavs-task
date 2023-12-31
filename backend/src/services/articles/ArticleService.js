@@ -1,22 +1,22 @@
 import db from '../../models/articles.js';
 import AuthService from '../auth/AuthService.js';
 
-// import nanoid from 'nanoid';
+// AuthServiceのインスタンスを作成
 const authService = new AuthService();
 
-// クラス
+// 記事に関する操作を行うクラス
 class ArticleService {
   /**
-   * 記事一覧取得
-   * @param user_id
-   * @return ランダム値
+   * ユーザーIDを元に記事一覧を取得するメソッド
+   * @param user_id ユーザーID
+   * @return 記事一覧データ
    */
   async getArticleList(user_id) {
-    // ユーザーIDをキーにメモの記事を取得
+    // ユーザーIDをキーに記事を取得
     const rows = await db.Articles.findOne({ where: { id: user_id } });
     console.log(rows.dataValues);
 
-    // 取得したデータを返却形式に整形して格納し返却する
+    // 取得したデータを返却形式に整形
     const resData = {
       id: rows.dataValues.id,
       title: rows.dataValues.title,
@@ -26,7 +26,7 @@ class ArticleService {
     return resData;
   }
 
-  // title,content,取得し、newArticleに格納
+  // 新規記事を作成し、その情報をnewArticleに格納するメソッド
   async createArticle(title, content, created_at) {
     const newArticle = await db.articles.create({
       title,
@@ -37,15 +37,17 @@ class ArticleService {
     return newArticle;
   }
   /**
-   * 記事情報取得
-   * @param user_id
-   * @return ランダム値
+   * 記事情報を取得するメソッド
+   * @param user_id ユーザーID
+   * @param article_id 記事ID
+   * @return 記事情報
    */
   getArticle(user_id, article_id) {
     return {};
   }
 }
 
+// ArticleServiceクラスをエクスポート
 export default ArticleService;
 
 // // クラス

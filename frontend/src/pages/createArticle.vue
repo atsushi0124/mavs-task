@@ -8,26 +8,31 @@ import { useUserStore } from "~/store/user";
 // 環境変数（.env参照）からAPIのベースURLを取得
 const $config = useRuntimeConfig();
 const apiBaseUrl = $config.public.apiBaseUrl;
+
 // ユーザーストアを取得
 const userStore = useUserStore();
+const signIn = userStore.token;
 
-// refを使用して、memoTitleとmemoDescという名前のリアクティブな参照を作成
-// これらはそれぞれinputとtextareaの値を保持します
-const memoTitle = ref("");
-const memoDesc = ref("");
+// タイトルを入力後、Enterキーを押すと次のテキストエリアにフォーカスを移動
+// これにより、ユーザーはキーボードだけでメモを迅速に入力できます
+const handleEnter = (event: KeyboardEvent) => {
+  event.preventDefault();
+  (document.getElementById("Memo__desc") as HTMLInputElement).focus();
+};
 
 // フォームの設定
+// handleSubmitとisSubmittingはvee-validateから取得
 const { handleSubmit, isSubmitting } = useForm({
   // バリデーションルール
+  // memoTitleとmemoDescは必須
   validationSchema: {
-    email(value: string) {
-      // 必須
+    memoTitle(value: string) {
       if (!value) {
         return "タイトルを入力してください";
       }
       return true;
     },
-    password(value: string) {
+    memoDesc(value: string) {
       if (!value) {
         return "内容を入力してください";
       }
@@ -37,46 +42,46 @@ const { handleSubmit, isSubmitting } = useForm({
 });
 
 // フィールドの値とエラーメッセージを取得
-const { value: memoTitle, errorMessage: emailErrorMessage } =
+// useFieldはvee-validateから取得
+const { value: memoTitle, errorMessage: titleErrorMessage } =
   useField("memoTitle");
-const { value: pmemoDesc, errorMessage: passwordErrorMessage } =
+
+const { value: memoDesc, errorMessage: memoDescErrorMessage } =
   useField("memoDesc");
 
 // addMemoという名前の関数を定義
 // この関数は、ユーザーが保存ボタンをクリックしたときに実行されます
+// メモのタイトルと内容をログに出力し、APIを呼び出してメモを保存します
 const addMemo = handleSubmit(async () => {
   try {
-    console.log(memoTitle.value, memoDesc.value);
-    // ログインAPIを呼び出す -> /backend/src/routes/auth/auth.router.tsを参照
-    const { data } = await useFetch<AddMemoResponse>(
-      `${apiBaseUrl}/articles/createArticle`,
-      {
-        method: "POST",
-        body: {
-          title: memoTitle.value,
-          content: memoDesc.value,
-        },
-      }
-    );
-    console.log(data);
+    // const { signin } = await useFetch<SignInResponse>
+    if (signIn) {
+      console.log(memoTitle.value, memoDesc.value);
+      const { data } = await useFetch<AddMemoResponse>(
+        `${apiBaseUrl}/articles/createArticle`,
+        {
+          method: "POST",
+          body: {
+            title: memoTitle.value,
+            content: memoDesc.value,
+          },
+        }
+      );
+      console.log(data);
+    }
   } catch (error) {
     console.log(error);
   }
-
-  // memoTitleとmemoDescの現在の値をコンソールに出力
 });
 
-// タイトルを入力後、Enterキーを押すと次のテキストエリアにフォーカスを移動
-const handleEnter = (event: KeyboardEvent) => {
-  event.preventDefault();
-  // 次のテキストエリアにフォーカスを移動
-  (document.getElementById("Memo__desc") as HTMLInputElement).focus();
-};
+// ページのタイトルなどを設定
+useHead({
+  title: "メモ追加ページ",
+});
 </script>
 
 <template>
   <div class="container">
-    <!-- 省略 -->
     <div class="center">
       <div class="memo__header">
         <NuxtLink to="/">
@@ -94,8 +99,8 @@ const handleEnter = (event: KeyboardEvent) => {
       </div>
 
       <form>
-        <!-- 省略 -->
         <!-- v-modelディレクティブを使用して、inputの値をmemoTitleにバインド -->
+        <!-- Enterキーを押すとhandleEnter関数が実行され、次のテキストエリアにフォーカスが移動します -->
         <input
           class="memo__title"
           name="memo__ttl"
@@ -105,15 +110,18 @@ const handleEnter = (event: KeyboardEvent) => {
           v-model="memoTitle"
           @keydown.enter="handleEnter"
         />
+        <p>{{ titleErrorMessage }}</p>
 
         <!-- v-modelディレクティブを使用して、textareaの値をmemoDescにバインド -->
+        <!-- ユーザーがここに入力した内容がmemoDescに保存されます -->
         <textarea
+          v-model="memoDesc"
           name="memo__desc"
           id="Memo__desc"
           class="memo__desc"
           placeholder="内容を入力してください"
-          v-model="memoDesc"
         />
+        <p>{{ memoDescErrorMessage }}</p>
       </form>
     </div>
   </div>
@@ -158,7 +166,6 @@ const handleEnter = (event: KeyboardEvent) => {
       }
     }
   }
-  // メモの追加ボタンの指定
 }
 
 form {

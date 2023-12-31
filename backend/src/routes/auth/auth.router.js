@@ -28,9 +28,10 @@ router.post('/signin', async (req, res, next) => {
       email: email,
       token: resCreateToken,
     };
-
+    console.log(email);
     res.status(200).json(body);
   } catch (error) {
+    console.error(email);
     console.error(error);
     res.status(500).json({});
   }

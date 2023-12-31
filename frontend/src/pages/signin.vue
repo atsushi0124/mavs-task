@@ -60,6 +60,7 @@ const onSubmit = handleSubmit(async () => {
 
     // レスポンスのデータを取得（ref値）
     const response = data.value;
+    console.log(data.value);
     // トークンの有無でログインできたか判断
     const hasToken = response && !!response.token;
     if (hasToken) {
@@ -73,6 +74,8 @@ const onSubmit = handleSubmit(async () => {
       email.value = "";
       password.value = "";
     }
+    console.log(data);
+    console.log(hasToken);
   } catch (error) {
     console.log(error);
   }
