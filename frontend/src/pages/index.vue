@@ -2,6 +2,15 @@
 import { useField, useForm } from "vee-validate";
 import { useUserStore } from "~/store/user";
 import { SignInResponse } from "~/types/api";
+
+// ユーザーストアを取得
+const userStore = useUserStore();
+// 転送処理を行うためのフック
+const $router = useRouter();
+
+if (!userStore.isLoggedIn) {
+  $router.push("/signin");
+}
 </script>
 
 <template>
