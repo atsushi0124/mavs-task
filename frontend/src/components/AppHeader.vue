@@ -20,12 +20,6 @@ onMounted(() => {
         <NuxtLink to="/">メモアプリ</NuxtLink>
       </h1>
       <div v-if="userStore.isLoggedIn" class="signin">
-        <div class="delToggleBtn">
-          <img src="../assets/images/delete.svg" alt="削除アイコン" />
-          <button>選択</button>
-          <button>キャンセル</button>
-          <button>削除</button>
-        </div>
         <p>ようこそ！<br />{{ userStore.email }}さん</p>
         <button type="button" @click="userStore.logout()">ログアウト</button>
       </div>
@@ -51,7 +45,7 @@ onMounted(() => {
 .signin {
   display: flex;
   justify-content: flex-end;
-  width: 40%;
+  width: 70%;
   img {
     height: 40px;
     margin-right: 10px;
