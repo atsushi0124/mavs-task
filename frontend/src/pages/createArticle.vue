@@ -11,7 +11,13 @@ const apiBaseUrl = $config.public.apiBaseUrl;
 
 // ユーザーストアを取得
 const userStore = useUserStore();
-const signIn = userStore.token;
+const token = userStore.token;
+
+const authorization = computed(() => `Bearer ${token}`);
+const headers = computed(() => ({
+  authorization: authorization,
+}));
+console.log(headers.value);
 
 // タイトルを入力後、Enterキーを押すと次のテキストエリアにフォーカスを移動
 // これにより、ユーザーはキーボードだけでメモを迅速に入力できます
@@ -55,20 +61,19 @@ const { value: memoDesc, errorMessage: memoDescErrorMessage } =
 const addMemo = handleSubmit(async () => {
   try {
     // const { signin } = await useFetch<SignInResponse>
-    if (signIn) {
-      console.log(memoTitle.value, memoDesc.value);
-      const { data } = await useFetch<AddMemoResponse>(
-        `${apiBaseUrl}/articles/createArticle`,
-        {
-          method: "POST",
-          body: {
-            title: memoTitle.value,
-            content: memoDesc.value,
-          },
-        }
-      );
-      console.log(data);
-    }
+    console.log(memoTitle.value, memoDesc.value);
+    const { data } = await useFetch<AddMemoResponse>(
+      `${apiBaseUrl}/articles/createArticle`,
+      {
+        method: "POST",
+        headers: headers.value,
+        body: JSON.stringify({
+          title: memoTitle.value,
+          content: memoDesc.value,
+        }),
+      }
+    );
+    console.log(data.value);
   } catch (error) {
     console.log(error);
   }

@@ -275,11 +275,14 @@ console.log(deleteIcon.value);
       border: 2px solid $colorWhite;
     }
     .checked_active {
-      width: 100px;
-      height: 100px;
+      width: 30px;
+      height: 30px;
       position: absolute;
       z-index: 20;
-      background-size: contain;
+      padding-top: 2px;
+      background-color: $colorPurple;
+      background-position: center;
+      background-size: 15px;
       background-repeat: no-repeat;
       background-image: url("../assets/images/check.png");
     }
