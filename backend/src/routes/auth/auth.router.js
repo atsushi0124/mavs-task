@@ -31,7 +31,7 @@ router.post('/signin', async (req, res, next) => {
     console.log(email);
     res.status(200).json(body);
   } catch (error) {
-    console.error(email);
+    console.info(email);
     console.error(error);
     res.status(500).json({});
   }

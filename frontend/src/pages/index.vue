@@ -9,8 +9,10 @@ const userStore = useUserStore();
 // 転送処理を行うためのフック
 const $router = useRouter();
 
-// DOM要素への参照を作成します。
-const deleteIcon = ref(null);
+// DOM要素への参照を作成
+let deleteIcon = ref(true);
+const cancelBtn = ref(null);
+const deleteBtn = ref(null);
 
 // サインインしているかチェック
 // していない場合はサインインページに飛ばす
@@ -18,29 +20,58 @@ if (!userStore.isLoggedIn) {
   $router.push("/signin");
 }
 
-// メモ選択の処理
+// ゴミ箱アイコンの削除
 const MemoDelete = () => {
+  // deleteIconを非表示にし、cancelBtnとdeleteBtnを表示
   if (deleteIcon.value) {
-    deleteIcon.value.classList.add("deleteIcon_none");
-    console.log(deleteIcon.value);
+    deleteIcon.value = false;
   } else {
-    console.error("Delete icon not found");
+    deleteIcon.value = true;
   }
+  return deleteIcon;
+  // if (cancelBtn.value && deleteBtn.value) {
+  //   cancelBtn.value.classList.remove("none");
+  //   deleteBtn.value.classList.remove("none");
+  // }
 };
+
+// キャンセルボタンを押した時にゴミ箱アイコンを表示
+// const cancel = () => {
+//   if (deleteIcon.value) {
+//     deleteIcon.value.classList.remove("deleteIcon_none");
+//   }
+//   if (cancelBtn.value && deleteBtn.value) {
+//     cancelBtn.value.classList.add("none");
+//     deleteBtn.value.classList.add("none");
+//   }
+//   return deleteIcon.value;
+// };
+
+console.log(deleteIcon.value);
 </script>
 
 <template>
   <div class="container">
-    <div class="delToggleBtn">
+    <div id="delToggleBtn" class="delToggleBtn">
       <img
-        ref="deleteIcon"
+        v-if="deleteIcon"
         @click="MemoDelete"
+        ref="deleteIcon"
         id="deleteIcon"
         src="../assets/images/delete.svg"
         alt="削除アイコン"
       />
-      <button ref="select" class="select none">キャンセル</button>
-      <button ref="deletBtn" class="delete none">削除</button>
+      <div v-else>
+        <button
+          @click="MemoDelete"
+          ref="cancelBtn"
+          id="cancelBtn"
+          class="cancel"
+        >
+          キャンセル
+        </button>
+        <button ref="deleteBtn" id="deleteBtn" class="delete">削除</button>
+      </div>
     </div>
     <div class="center">
       <!-- メモの追加ボタン -->
@@ -57,6 +88,7 @@ const MemoDelete = () => {
           <p class="description">
             ダミーテキストダミーテキストダミーテキストダミーテキストダミーテキスト
           </p>
+          <div class="checked checked_active"></div>
           <h4 class="title">タイトル</h4>
           <p class="date">2023.12.00</p>
         </div>
@@ -130,16 +162,32 @@ const MemoDelete = () => {
   width: 75%;
   margin: 20px auto;
   img {
-    width: 40px;
+    width: 35px;
+    height: 35px;
   }
-  .select {
+  .cancel {
     margin-right: 10px;
+    height: 35px;
+    color: $colorPurple;
+    border-radius: 5px;
+    background-color: $colorWhite;
+    border: $colorPurple 2px solid;
+    &:hover {
+      background-color: $colorPurple;
+      color: $colorWhite;
+    }
   }
   .delete {
     background-color: $colorRed;
     border: 2px solid $colorRed;
     border-radius: 5px;
     color: $colorWhite;
+    height: 35px;
+    transition: 0.5s;
+    &:hover {
+      background-color: $colorWhite;
+      color: $colorRed;
+    }
   }
   .none {
     display: none;
@@ -206,6 +254,7 @@ const MemoDelete = () => {
     flex-direction: column;
     align-items: center;
     margin-bottom: 30px;
+    position: relative;
     .description {
       width: 220px;
       height: 200px;
@@ -213,6 +262,26 @@ const MemoDelete = () => {
       border-radius: 5px;
       margin-left: 30px;
       padding: 10px;
+    }
+    .checked {
+      position: absolute;
+      content: "";
+      bottom: 25%;
+      right: 5%;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background-color: none;
+      border: 2px solid $colorWhite;
+    }
+    .checked_active {
+      width: 100px;
+      height: 100px;
+      position: absolute;
+      z-index: 20;
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-image: url("../assets/images/check.png");
     }
     .title {
       margin-top: 5px;
