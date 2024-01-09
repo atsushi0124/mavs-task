@@ -27,11 +27,12 @@ router.post('/signin', async (req, res, next) => {
     const body = {
       email: email,
       token: resCreateToken,
+      id: resSearchUser[0].id,
     };
     console.log(email);
     res.status(200).json(body);
   } catch (error) {
-    console.info(email);
+    console.log(email);
     console.error(error);
     res.status(500).json({});
   }

@@ -1,19 +1,23 @@
-import { defineStore } from 'pinia'
+import { defineStore } from "pinia";
 
 interface State {
-  token: string
-  email: string
+  id: Number;
+  token: string;
+  email: string;
+  user_id: Number;
 }
 
-export const useUserStore = defineStore('user', {
+export const useUserStore = defineStore("user", {
   /**
    * ユーザーの認証情報を保持するためのState
    */
   state: (): State => {
     return {
-      token: '',
-      email: '',
-    }
+      id: 0,
+      token: "",
+      email: "",
+      user_id: 0,
+    };
   },
 
   actions: {
@@ -21,14 +25,15 @@ export const useUserStore = defineStore('user', {
      * ログアウト
      */
     logout() {
-      this.$reset()
+      this.$reset();
     },
     /**
      * ログイン
      */
-    login({ token, email }: State) {
-      this.token = token
-      this.email = email
+    login({ token, email, user_id }: State) {
+      this.token = token;
+      this.email = email;
+      this.user_id = user_id;
     },
   },
 
@@ -37,7 +42,7 @@ export const useUserStore = defineStore('user', {
      * ログイン状態の判定
      */
     isLoggedIn: (state) => {
-      return state.token !== ''
+      return state.token !== "";
     },
   },
-})
+});

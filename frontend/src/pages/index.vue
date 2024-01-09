@@ -46,8 +46,6 @@ const MemoDelete = () => {
 //   }
 //   return deleteIcon.value;
 // };
-
-console.log(deleteIcon.value);
 </script>
 
 <template>

@@ -1,8 +1,4 @@
-import db from '../../models/articles.js';
-import AuthService from '../auth/AuthService.js';
-
-// AuthServiceのインスタンスを作成
-const authService = new AuthService();
+import db from '../../models/index.js';
 
 // 記事に関する操作を行うクラス
 class ArticleService {
@@ -27,10 +23,14 @@ class ArticleService {
   }
 
   // 新規記事を作成し、その情報をnewArticleに格納するメソッド
-  async createArticle(title, content, created_at) {
-    const newArticle = await db.articles.create({
+  async createArticle(id, title, content, user_id, created_at) {
+    console.log(`================= ${created_at} ========================`);
+    console.log(`================= ${user_id} ========================`);
+    const newArticle = await db.Articles.create({
+      id,
       title,
       content,
+      user_id,
       created_at,
     });
 

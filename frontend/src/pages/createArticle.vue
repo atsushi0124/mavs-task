@@ -12,15 +12,9 @@ const apiBaseUrl = $config.public.apiBaseUrl;
 // ユーザーストアを取得
 const userStore = useUserStore();
 const token = userStore.token;
-
-const authorization = computed(() => `Bearer ${token}`);
-const headers = computed(() => ({
-  authorization: authorization,
-}));
-console.log(headers.value);
+const user_id = userStore.user_id;
 
 // タイトルを入力後、Enterキーを押すと次のテキストエリアにフォーカスを移動
-// これにより、ユーザーはキーボードだけでメモを迅速に入力できます
 const handleEnter = (event: KeyboardEvent) => {
   event.preventDefault();
   (document.getElementById("Memo__desc") as HTMLInputElement).focus();
@@ -55,30 +49,40 @@ const { value: memoTitle, errorMessage: titleErrorMessage } =
 const { value: memoDesc, errorMessage: memoDescErrorMessage } =
   useField("memoDesc");
 
+let memoId = 0;
+
 // addMemoという名前の関数を定義
-// この関数は、ユーザーが保存ボタンをクリックしたときに実行されます
-// メモのタイトルと内容をログに出力し、APIを呼び出してメモを保存します
+// この関数は、ユーザーが保存ボタンをクリックしたときに実行
+// メモのタイトルと内容をログに出力し、APIを呼び出してメモを保存
 const addMemo = handleSubmit(async () => {
   try {
+    if (user_id) {
+      memoId += 1;
+    }
     // const { signin } = await useFetch<SignInResponse>
     console.log(memoTitle.value, memoDesc.value);
     const { data } = await useFetch<AddMemoResponse>(
       `${apiBaseUrl}/articles/createArticle`,
       {
         method: "POST",
-        headers: headers.value,
+        headers: {
+          authorization: token,
+        },
         body: JSON.stringify({
+          id: memoId,
           title: memoTitle.value,
           content: memoDesc.value,
+          user_id: user_id,
         }),
       }
     );
     console.log(data.value);
+    return memoId;
   } catch (error) {
     console.log(error);
   }
 });
-
+console.log(memoId);
 // ページのタイトルなどを設定
 useHead({
   title: "メモ追加ページ",

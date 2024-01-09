@@ -67,6 +67,7 @@ const onSubmit = handleSubmit(async () => {
       // 成功の場合はトークンを保存
       userStore.token = response.token;
       userStore.email = response.email;
+      userStore.user_id = response.id;
       // トップページに遷移
       $router.push("/");
     } else {

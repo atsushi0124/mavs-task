@@ -1,10 +1,11 @@
-import articleService from '../../services/articles/ArticleService.js';
+import ArticleService from '../../services/articles/ArticleService.js';
 import express from 'express';
+import AuthService from '../../services/auth/AuthService.js';
 import authenticate from '../../middleware/authenticate.js';
 import config from '../../config/jwt-config.js';
 
 const router = express.Router();
-
+const articleService = new ArticleService();
 /**
  * メモ新規登録
  */
@@ -14,20 +15,21 @@ router.post('/createArticle', authenticate, async (req, res, next) => {
     // const token = req.headers.token;
     // const decode = jwt.verify(token, config.jwt.secret);
     // console.log(decode);
-    // リクエストパラメーター
-    const { title, content } = req.body;
+    const { id, title, content, user_id } = req.body;
+    console.info(`=========== ${id} =============================`);
 
     // 新しい記事を作成
-    const newArticle = await articleService.createArticle('', title, content);
+    const newArticle = await articleService.createArticle(id, title, content, user_id);
 
     // 返却用データを生成
     const body = {
-      // id: newArticle.id,
+      id: newArticle.id,
       title: newArticle.title,
       content: newArticle.content,
-      // created_at: newArticle.created_at,
+      user_id: newArticle.user_id,
+      created_at: newArticle.created_at,
     };
-    console.log(title, content);
+    console.log(body);
     res.status(200).json(body);
   } catch (error) {
     console.error(error);
