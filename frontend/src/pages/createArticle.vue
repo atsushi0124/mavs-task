@@ -49,16 +49,11 @@ const { value: memoTitle, errorMessage: titleErrorMessage } =
 const { value: memoDesc, errorMessage: memoDescErrorMessage } =
   useField("memoDesc");
 
-let memoId = 0;
-
 // addMemoという名前の関数を定義
 // この関数は、ユーザーが保存ボタンをクリックしたときに実行
 // メモのタイトルと内容をログに出力し、APIを呼び出してメモを保存
 const addMemo = handleSubmit(async () => {
   try {
-    if (user_id) {
-      memoId += 1;
-    }
     // const { signin } = await useFetch<SignInResponse>
     console.log(memoTitle.value, memoDesc.value);
     const { data } = await useFetch<AddMemoResponse>(
@@ -69,7 +64,6 @@ const addMemo = handleSubmit(async () => {
           authorization: token,
         },
         body: JSON.stringify({
-          id: memoId,
           title: memoTitle.value,
           content: memoDesc.value,
           user_id: user_id,
@@ -77,12 +71,10 @@ const addMemo = handleSubmit(async () => {
       }
     );
     console.log(data.value);
-    return memoId;
   } catch (error) {
     console.log(error);
   }
 });
-console.log(memoId);
 // ページのタイトルなどを設定
 useHead({
   title: "メモ追加ページ",

@@ -23,14 +23,13 @@ class ArticleService {
   }
 
   // 新規記事を作成し、その情報をnewArticleに格納するメソッド
-  async createArticle(id, title, content, user_id, created_at) {
+  async createArticle(title, content, user_id, created_at) {
     console.log(`================= ${created_at} ========================`);
     console.log(`================= ${user_id} ========================`);
     const newArticle = await db.Articles.create({
-      id,
       title,
       content,
-      user_id,
+      author_id: user_id,
       created_at,
     });
 

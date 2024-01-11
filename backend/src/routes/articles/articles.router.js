@@ -15,19 +15,18 @@ router.post('/createArticle', authenticate, async (req, res, next) => {
     // const token = req.headers.token;
     // const decode = jwt.verify(token, config.jwt.secret);
     // console.log(decode);
-    const { id, title, content, user_id } = req.body;
-    console.info(`=========== ${id} =============================`);
+    const { title, content, user_id } = req.body;
+    console.info(`=========== ${user_id} =============================`);
 
     // 新しい記事を作成
-    const newArticle = await articleService.createArticle(id, title, content, user_id);
+    const newArticle = await articleService.createArticle(title, content, user_id);
 
     // 返却用データを生成
     const body = {
       id: newArticle.id,
       title: newArticle.title,
       content: newArticle.content,
-      user_id: newArticle.user_id,
-      created_at: newArticle.created_at,
+      user_id: newArticle.author_id,
     };
     console.log(body);
     res.status(200).json(body);
