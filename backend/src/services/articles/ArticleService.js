@@ -9,17 +9,19 @@ class ArticleService {
    */
   async getArticleList(user_id) {
     // ユーザーIDをキーに記事を取得
-    const rows = await db.Articles.findOne({ where: { author_id: user_id } });
+    const rows = await db.Articles.findAll({ where: { author_id: user_id } });
     console.log(rows.dataValues);
 
     // 取得したデータを返却形式に整形
-    const resData = {
-      id: rows.dataValues.id,
-      title: rows.dataValues.title,
-      content: rows.dataValues.content,
-      createdDate: rows.dataValues.created_at,
-    };
-    return resData;
+    const resDataList = rows.map((row) => {
+      return {
+        id: row.dataValues.id,
+        title: row.dataValues.title,
+        content: row.dataValues.content,
+        createdDate: row.dataValues.created_at,
+      };
+    });
+    return resDataList;
   }
 
   // 新規記事を作成し、その情報をnewArticleに格納するメソッド
