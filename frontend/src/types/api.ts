@@ -9,3 +9,7 @@ export interface AddMemoResponse {
   title: string;
   content: string;
 }
+
+export interface getMemoResponse {
+  id: Number;
+}

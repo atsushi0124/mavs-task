@@ -9,7 +9,7 @@ class ArticleService {
    */
   async getArticleList(user_id) {
     // ユーザーIDをキーに記事を取得
-    const rows = await db.Articles.findOne({ where: { id: user_id } });
+    const rows = await db.Articles.findOne({ where: { author_id: user_id } });
     console.log(rows.dataValues);
 
     // 取得したデータを返却形式に整形

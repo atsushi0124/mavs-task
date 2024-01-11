@@ -1,11 +1,18 @@
 <script setup lang="ts">
 import { useField, useForm } from "vee-validate";
 import { useUserStore } from "~/store/user";
-import { SignInResponse } from "~/types/api";
+import { getMemoResponse } from "~/types/api";
 import { ref } from "vue";
+
+// 環境変数（.env参照）からAPIのベースURLを取得
+const $config = useRuntimeConfig();
+const apiBaseUrl = $config.public.apiBaseUrl;
 
 // ユーザーストアを取得
 const userStore = useUserStore();
+const token = userStore.token;
+const user_id = userStore.user_id;
+console.log(user_id);
 // 転送処理を行うためのフック
 const $router = useRouter();
 
@@ -46,6 +53,26 @@ const MemoDelete = () => {
 //   }
 //   return deleteIcon.value;
 // };
+const getMemo = async () => {
+  try {
+    console.log(user_id);
+    const { data } = await useFetch<getMemoResponse>(
+      `${apiBaseUrl}/getArticle/getArticle`,
+      {
+        method: "POST",
+        headers: {
+          authorization: token,
+        },
+        body: JSON.stringify({
+          user_id: user_id,
+        }),
+      }
+    );
+    console.log(data.value);
+  } catch (error) {
+    console.log(error);
+  }
+};
 </script>
 
 <template>
@@ -53,7 +80,7 @@ const MemoDelete = () => {
     <div id="delToggleBtn" class="delToggleBtn">
       <img
         v-if="deleteIcon"
-        @click="MemoDelete"
+        @click="getMemo"
         ref="deleteIcon"
         id="deleteIcon"
         src="../assets/images/delete.svg"
