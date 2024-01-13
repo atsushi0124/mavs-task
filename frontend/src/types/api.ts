@@ -10,6 +10,13 @@ export interface AddMemoResponse {
   content: string;
 }
 
-export interface getMemoResponse {
-  id: Number;
+export interface getResponse {
+  memoId: Number;
+  _rawValue: string;
+  title: string;
+}
+
+export interface deleteResponse {
+  user_id: Number;
+  memo_id: Number;
 }

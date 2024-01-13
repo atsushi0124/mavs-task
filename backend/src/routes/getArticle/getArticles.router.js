@@ -12,24 +12,18 @@ const articleService = new ArticleService();
 router.post('/getArticle', authenticate, async (req, res, next) => {
   try {
     const { user_id } = req.body;
-    console.info(`getArticle.router=========== ${user_id} =============================`);
 
-    // 新しい記事を作成
+    // 記事を取得
     const newArticle = await articleService.getArticleList(user_id);
 
-    // let arr = newArticle;
-    // // 返却用データを生成
-    // const body = {
-    //   id: newArticle.id,
-    //   user_id: newArticle.author_id,
-    //   title: newArticle.title,
-    //   content: newArticle.content,
-    //   createdDate: newArticle.createdDate,
-    // };
-
-    // let newData = JSON.stringify(arr);
-
-    console.log(`😄😄😄=============${newArticle} 😄😄😄😄`);
+    // 返却用データを生成
+    const body = newArticle.map(() => ({
+      id: newArticle.id,
+      title: newArticle.title,
+      content: newArticle.content,
+      author: newArticle.author,
+      date: new Date(newArticle.createdDate),
+    }));
     res.status(200).json(newArticle);
   } catch (error) {
     console.error(error);

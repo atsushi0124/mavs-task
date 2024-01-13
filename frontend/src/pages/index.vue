@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { useField, useForm } from "vee-validate";
 import { useUserStore } from "~/store/user";
-import { getMemoResponse } from "~/types/api";
+import { getResponse, deleteResponse } from "~/types/api";
 import { ref } from "vue";
+import Memo from "../layouts/Memo.vue";
 
 // 環境変数（.env参照）からAPIのベースURLを取得
 const $config = useRuntimeConfig();
@@ -12,6 +13,7 @@ const apiBaseUrl = $config.public.apiBaseUrl;
 const userStore = useUserStore();
 const token = userStore.token;
 const user_id = userStore.user_id;
+let memo_id = userStore.memo_id;
 console.log(user_id);
 // 転送処理を行うためのフック
 const $router = useRouter();
@@ -20,6 +22,7 @@ const $router = useRouter();
 let deleteIcon = ref(true);
 const cancelBtn = ref(null);
 const deleteBtn = ref(null);
+let contents = ref<getResponse | null>(null);
 
 // サインインしているかチェック
 // していない場合はサインインページに飛ばす
@@ -36,27 +39,13 @@ const MemoDelete = () => {
     deleteIcon.value = true;
   }
   return deleteIcon;
-  // if (cancelBtn.value && deleteBtn.value) {
-  //   cancelBtn.value.classList.remove("none");
-  //   deleteBtn.value.classList.remove("none");
-  // }
 };
 
-// キャンセルボタンを押した時にゴミ箱アイコンを表示
-// const cancel = () => {
-//   if (deleteIcon.value) {
-//     deleteIcon.value.classList.remove("deleteIcon_none");
-//   }
-//   if (cancelBtn.value && deleteBtn.value) {
-//     cancelBtn.value.classList.add("none");
-//     deleteBtn.value.classList.add("none");
-//   }
-//   return deleteIcon.value;
-// };
+// DBからメモを取得
 const getMemo = async () => {
   try {
     console.log(user_id);
-    const { data } = await useFetch<getMemoResponse>(
+    const { data } = await useFetch<getResponse>(
       `${apiBaseUrl}/getArticle/getArticle`,
       {
         method: "POST",
@@ -68,11 +57,45 @@ const getMemo = async () => {
         }),
       }
     );
-    console.log(data.value);
+    contents.value = data.value;
+    return contents.value;
   } catch (error) {
     console.log(error);
   }
 };
+
+// メモをクリックするとクリックしたIDを取得
+const handleMemoClick = (event: MouseEvent) => {
+  const clickedElement = event.currentTarget as HTMLElement;
+  const Memo_id = parseInt(clickedElement.id);
+  memo_id = Memo_id;
+  console.log(memo_id);
+};
+
+// メモの削除
+const deleteMemo = async () => {
+  try {
+    console.log(user_id);
+    const { data } = await useFetch<deleteResponse>(
+      `${apiBaseUrl}/deleteArticle/deleteArticle`,
+      {
+        method: "POST",
+        headers: {
+          authorization: token,
+        },
+        body: JSON.stringify({
+          user_id: user_id,
+          memo_id: memo_id,
+        }),
+      }
+    );
+    getMemo();
+    return contents.value;
+  } catch (error) {
+    console.log(error);
+  }
+};
+getMemo();
 </script>
 
 <template>
@@ -80,7 +103,7 @@ const getMemo = async () => {
     <div id="delToggleBtn" class="delToggleBtn">
       <img
         v-if="deleteIcon"
-        @click="getMemo"
+        @click="MemoDelete"
         ref="deleteIcon"
         id="deleteIcon"
         src="../assets/images/delete.svg"
@@ -95,7 +118,14 @@ const getMemo = async () => {
         >
           キャンセル
         </button>
-        <button ref="deleteBtn" id="deleteBtn" class="delete">削除</button>
+        <button
+          @click="deleteMemo"
+          ref="deleteBtn"
+          id="deleteBtn"
+          class="delete"
+        >
+          削除
+        </button>
       </div>
     </div>
     <div class="center">
@@ -103,77 +133,9 @@ const getMemo = async () => {
       <NuxtLink to="/createArticle" class="memoAddLink">
         <div class="memoAdd"></div>
       </NuxtLink>
-      <div class="memoDB">
-        <div class="page">
-          <!-- <List :memo="memos" /> -->
-          <!-- <Memo v-for="memo in memos" :key="memo" :memo="memo" /> -->
-        </div>
-        <!-- メモをDBから持ってきてタイトル/内容/日付を表示 -->
-        <div class="memo">
-          <p class="description">
-            ダミーテキストダミーテキストダミーテキストダミーテキストダミーテキスト
-          </p>
-          <div class="checked checked_active"></div>
-          <h4 class="title">タイトル</h4>
-          <p class="date">2023.12.00</p>
-        </div>
-        <div class="memo">
-          <p class="description">
-            ダミーテキストダミーテキストダミーテキストダミーテキストダミーテキスト
-          </p>
-          <h4 class="title">タイトル</h4>
-          <p class="date">2023.12.00</p>
-        </div>
-        <div class="memo">
-          <p class="description">
-            ダミーテキストダミーテキストダミーテキストダミーテキストダミーテキスト
-          </p>
-          <h4 class="title">タイトル</h4>
-          <p class="date">2023.12.00</p>
-        </div>
-        <div class="memo">
-          <p class="description">
-            ダミーテキストダミーテキストダミーテキストダミーテキストダミーテキスト
-          </p>
-          <h4 class="title">タイトル</h4>
-          <p class="date">2023.12.00</p>
-        </div>
-        <div class="memo">
-          <p class="description">
-            ダミーテキストダミーテキストダミーテキストダミーテキストダミーテキスト
-          </p>
-          <h4 class="title">タイトル</h4>
-          <p class="date">2023.12.00</p>
-        </div>
-        <div class="memo">
-          <p class="description">
-            ダミーテキストダミーテキストダミーテキストダミーテキストダミーテキスト
-          </p>
-          <h4 class="title">タイトル</h4>
-          <p class="date">2023.12.00</p>
-        </div>
-        <div class="memo">
-          <p class="description">
-            ダミーテキストダミーテキストダミーテキストダミーテキストダミーテキスト
-          </p>
-          <h4 class="title">タイトル</h4>
-          <p class="date">2023.12.00</p>
-        </div>
-        <div class="memo">
-          <p class="description">
-            ダミーテキストダミーテキストダミーテキストダミーテキストダミーテキスト
-          </p>
-          <h4 class="title">タイトル</h4>
-          <p class="date">2023.12.00</p>
-        </div>
-        <div class="memo">
-          <p class="description">
-            ダミーテキストダミーテキストダミーテキストダミーテキストダミーテキスト
-          </p>
-          <h4 class="title">タイトル</h4>
-          <p class="date">2023.12.00</p>
-        </div>
-      </div>
+      <ul class="memoDB">
+        <Memo :MemoList="contents" @click="handleMemoClick" />
+      </ul>
     </div>
   </div>
 </template>

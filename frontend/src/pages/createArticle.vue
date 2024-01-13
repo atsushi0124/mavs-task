@@ -88,15 +88,17 @@ useHead({
         <NuxtLink to="/">
           <img src="../assets/images/back.svg" alt="前の画面に戻る" />
         </NuxtLink>
+        <NuxtLink to="/">
+          <button
+            @click.prevent="addMemo"
+            class="save__btn"
+            :disabled="isSubmitting"
+          >
+            保存
+          </button>
+        </NuxtLink>
         <!-- 保存ボタンのクリックイベントにaddMemo関数をバインド -->
         <!-- .prevent修飾子は、クリックイベントのデフォルトの動作（この場合、フォームの送信）を防ぐ -->
-        <button
-          @click.prevent="addMemo"
-          class="save__btn"
-          :disabled="isSubmitting"
-        >
-          保存
-        </button>
       </div>
 
       <form>

@@ -21,7 +21,11 @@ onMounted(() => {
       </h1>
       <div v-if="userStore.isLoggedIn" class="signin">
         <p>ようこそ！<br />{{ userStore.email }}さん</p>
-        <button type="button" @click="userStore.logout()">ログアウト</button>
+        <NuxtLink to="/signin">
+          <button type="button" to="/signin" @click="userStore.logout()">
+            ログアウト
+          </button>
+        </NuxtLink>
       </div>
       <div v-else="!userStore.isLoggedIn">
         <NuxtLink to="/signin">サインイン</NuxtLink>
