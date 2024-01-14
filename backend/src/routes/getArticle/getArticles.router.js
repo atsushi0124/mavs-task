@@ -1,7 +1,6 @@
 import ArticleService from '../../services/articles/ArticleService.js';
 import express from 'express';
 import authenticate from '../../middleware/authenticate.js';
-
 const router = express.Router();
 const articleService = new ArticleService();
 /**

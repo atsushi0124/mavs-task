@@ -4,7 +4,7 @@ import usersRouter from './users/users.router.js';
 import articlesRouter from './articles/articles.router.js';
 import getArticlesRouter from './getArticle/getArticles.router.js';
 import deleteArticleRouter from './deleteArticle/deleteArticle.router.js';
-import viewArticleRouter from './viewArticles/viewArticles.router.js';
+import viewArticleRouter from './viewArticle/viewArticles.router.js';
 const router = express.Router();
 
 // ルーティング設定

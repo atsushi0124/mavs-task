@@ -15,7 +15,7 @@ const token = userStore.token;
 const user_id = userStore.user_id;
 const memo_id = userStore.memo_id;
 
-console.log(`createArticle ------------- ${memo_id}`);
+console.log(`createArticle ------------- ${memo_id} + ${token}`);
 
 // フォームの設定
 // handleSubmitとisSubmittingはvee-validateから取得
@@ -77,7 +77,7 @@ const viewMemo = async () => {
   try {
     console.log(user_id, memo_id);
     const { data } = await useFetch<viewResponse>(
-      `${apiBaseUrl}/viewArticles/viewArticle`,
+      `${apiBaseUrl}/viewArticle/viewArticle`,
       {
         method: "POST",
         headers: {

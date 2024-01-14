@@ -12,15 +12,15 @@ router.post('/viewArticle', authenticate, async (req, res, next) => {
     const { user_id, memo_id } = req.body;
     console.log(user_id);
     // 記事を取得
-    const newArticle = await articleService.getArticle(user_id, memo_id);
+    const viewArticle = await articleService.getArticle(user_id, memo_id);
 
     // 返却用データを生成
     const body = {
-      id: newArticle.id,
-      title: newArticle.title,
-      content: newArticle.content,
+      id: viewArticle.id,
+      title: viewArticle.title,
+      content: viewArticle.content,
     };
-    res.status(200).json(newArticle);
+    res.status(200).json(body);
   } catch (error) {
     console.error(error);
     res.status(500).json({});

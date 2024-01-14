@@ -1,8 +1,7 @@
 <script setup lang="ts">
-import { useField, useForm } from "vee-validate";
+import { ref } from "vue";
 import { useUserStore } from "~/store/user";
 import { getResponse, deleteResponse } from "~/types/api";
-import { ref } from "vue";
 import Memo from "../layouts/Memo.vue";
 
 // 環境変数（.env参照）からAPIのベースURLを取得
@@ -68,7 +67,7 @@ const handleMemoClick = (event: MouseEvent) => {
   const Memo_id = parseInt(clickedElement.id);
   userStore.memo_id = Memo_id;
   console.log(`index 72行目 ========= ${userStore.memo_id}`);
-  $router.push("/createArticle");
+  // $router.push("/createArticle");
 };
 
 // メモの削除
