@@ -1,7 +1,7 @@
 <script setup lang="ts">
 // Vue 3のComposition APIの一部であるref関数をインポート
 import { ref } from "vue";
-import { AddMemoResponse } from "~/types/api";
+import { AddMemoResponse, viewResponse } from "~/types/api";
 import { useField, useForm } from "vee-validate";
 import { useUserStore } from "~/store/user";
 
@@ -13,12 +13,9 @@ const apiBaseUrl = $config.public.apiBaseUrl;
 const userStore = useUserStore();
 const token = userStore.token;
 const user_id = userStore.user_id;
+const memo_id = userStore.memo_id;
 
-// タイトルを入力後、Enterキーを押すと次のテキストエリアにフォーカスを移動
-const handleEnter = (event: KeyboardEvent) => {
-  event.preventDefault();
-  (document.getElementById("Memo__desc") as HTMLInputElement).focus();
-};
+console.log(`createArticle ------------- ${memo_id}`);
 
 // フォームの設定
 // handleSubmitとisSubmittingはvee-validateから取得
@@ -75,6 +72,30 @@ const addMemo = handleSubmit(async () => {
     console.log(error);
   }
 });
+
+const viewMemo = async () => {
+  try {
+    console.log(user_id, memo_id);
+    const { data } = await useFetch<viewResponse>(
+      `${apiBaseUrl}/viewArticles/viewArticle`,
+      {
+        method: "POST",
+        headers: {
+          authorization: token,
+        },
+        body: JSON.stringify({
+          user_id: user_id,
+          memo_id: memo_id,
+        }),
+      }
+    );
+    console.log(data.value);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+viewMemo();
 // ページのタイトルなどを設定
 useHead({
   title: "メモ追加ページ",
@@ -111,7 +132,6 @@ useHead({
           id="memo__ttl"
           placeholder="タイトルを入力してください"
           v-model="memoTitle"
-          @keydown.enter="handleEnter"
         />
         <p>{{ titleErrorMessage }}</p>
 

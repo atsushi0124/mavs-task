@@ -5,17 +5,22 @@ import authenticate from '../../middleware/authenticate.js';
 const router = express.Router();
 const articleService = new ArticleService();
 /**
- * メモ新規登録
+ * メモを取得
  */
-router.post('/deleteArticle', authenticate, async (req, res, next) => {
+router.post('/viewArticle', authenticate, async (req, res, next) => {
   try {
     const { user_id, memo_id } = req.body;
-    console.info(`delArticle.router=========== ${memo_id} =============================`);
+    console.log(user_id);
+    // 記事を取得
+    const newArticle = await articleService.getArticle(user_id, memo_id);
 
-    // 記事を削除
-    const delArticle = await articleService.deleteArticle(user_id, memo_id);
-
-    res.status(200).json(delArticle);
+    // 返却用データを生成
+    const body = {
+      id: newArticle.id,
+      title: newArticle.title,
+      content: newArticle.content,
+    };
+    res.status(200).json(newArticle);
   } catch (error) {
     console.error(error);
     res.status(500).json({});

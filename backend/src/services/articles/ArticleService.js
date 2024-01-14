@@ -50,8 +50,14 @@ class ArticleService {
    * @param article_id 記事ID
    * @return 記事情報
    */
-  getArticle(user_id, article_id) {
-    return {};
+  async getArticle(user_id, memo_id) {
+    const getArticle = await db.Articles.findOne({
+      where: {
+        id: memo_id,
+        author_id: user_id,
+      },
+    });
+    return getArticle;
   }
 
   /**

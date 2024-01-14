@@ -13,8 +13,7 @@ const apiBaseUrl = $config.public.apiBaseUrl;
 const userStore = useUserStore();
 const token = userStore.token;
 const user_id = userStore.user_id;
-let memo_id = userStore.memo_id;
-console.log(user_id);
+console.log(`index 17行目 ========= ${userStore.memo_id}`);
 // 転送処理を行うためのフック
 const $router = useRouter();
 
@@ -44,7 +43,6 @@ const MemoDelete = () => {
 // DBからメモを取得
 const getMemo = async () => {
   try {
-    console.log(user_id);
     const { data } = await useFetch<getResponse>(
       `${apiBaseUrl}/getArticle/getArticle`,
       {
@@ -68,8 +66,9 @@ const getMemo = async () => {
 const handleMemoClick = (event: MouseEvent) => {
   const clickedElement = event.currentTarget as HTMLElement;
   const Memo_id = parseInt(clickedElement.id);
-  memo_id = Memo_id;
-  console.log(memo_id);
+  userStore.memo_id = Memo_id;
+  console.log(`index 72行目 ========= ${userStore.memo_id}`);
+  $router.push("/createArticle");
 };
 
 // メモの削除
@@ -85,7 +84,7 @@ const deleteMemo = async () => {
         },
         body: JSON.stringify({
           user_id: user_id,
-          memo_id: memo_id,
+          memo_id: userStore.memo_id,
         }),
       }
     );

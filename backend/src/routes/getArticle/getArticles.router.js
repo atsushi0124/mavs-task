@@ -1,8 +1,6 @@
 import ArticleService from '../../services/articles/ArticleService.js';
 import express from 'express';
-import AuthService from '../../services/auth/AuthService.js';
 import authenticate from '../../middleware/authenticate.js';
-import config from '../../config/jwt-config.js';
 
 const router = express.Router();
 const articleService = new ArticleService();

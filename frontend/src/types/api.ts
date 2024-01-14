@@ -20,3 +20,8 @@ export interface deleteResponse {
   user_id: Number;
   memo_id: Number;
 }
+
+export interface viewResponse {
+  user_id: Number;
+  memo_id: Number;
+}
