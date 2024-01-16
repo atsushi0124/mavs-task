@@ -16,7 +16,7 @@ router.post('/viewArticle', authenticate, async (req, res, next) => {
 
     // 返却用データを生成
     const body = {
-      id: viewArticle.id,
+      memo_id: viewArticle.id,
       title: viewArticle.title,
       content: viewArticle.content,
     };

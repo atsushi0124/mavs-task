@@ -75,6 +75,34 @@ class ArticleService {
     });
     return delArticle;
   }
+
+  /**
+   * 記事情報を更新するメソッド
+   * @param user_id ユーザーID
+   * @param article_id 記事ID
+   * @return 記事情報
+   */
+  async updateArticle(user_id, memo_id, memo_title, memo_desc) {
+    try {
+      const articleData = {
+        title: memo_title,
+        content: memo_desc,
+      };
+
+      const [updatedRows] = await db.Articles.update(articleData, {
+        where: {
+          id: memo_id,
+          author_id: user_id,
+        },
+      });
+
+      console.log(`${updatedRows} rows updated.`);
+      return updatedRows;
+    } catch (error) {
+      console.error('Update failed:', error);
+      throw error;
+    }
+  }
 }
 
 // ArticleServiceクラスをエクスポート

@@ -4,6 +4,7 @@ import { ref } from "vue";
 import { AddMemoResponse, viewResponse } from "~/types/api";
 import { useField, useForm } from "vee-validate";
 import { useUserStore } from "~/store/user";
+import { watch } from "vue";
 
 // 環境変数（.env参照）からAPIのベースURLを取得
 const $config = useRuntimeConfig();
@@ -15,8 +16,22 @@ const token = userStore.token;
 const user_id = userStore.user_id;
 const memo_id = userStore.memo_id;
 
-console.log(`createArticle ------------- ${memo_id} + ${token}`);
+// 転送処理を行うためのフック
+const $router = useRouter();
 
+// resTitle, resMemo_id, resContentをリアクティブな参照として定義
+const resTitle = ref("");
+const resMemo_id = ref();
+const resContent = ref("");
+
+// resTitleが変更されたときにmemoTitleを更新するウォッチャ
+watch(resTitle, (newTitle) => {
+  memoTitle.value = newTitle;
+});
+
+watch(resContent, (newContent) => {
+  memoDesc.value = newContent;
+});
 // フォームの設定
 // handleSubmitとisSubmittingはvee-validateから取得
 const { handleSubmit, isSubmitting } = useForm({
@@ -68,11 +83,13 @@ const addMemo = handleSubmit(async () => {
       }
     );
     console.log(data.value);
+    $router.push("/");
   } catch (error) {
     console.log(error);
   }
 });
 
+// メモidがある場合は表示する
 const viewMemo = async () => {
   try {
     console.log(user_id, memo_id);
@@ -89,13 +106,57 @@ const viewMemo = async () => {
         }),
       }
     );
-    console.log(data.value);
+    if (data.value) {
+      resMemo_id.value = data.value.memo_id;
+      resTitle.value = data.value.title;
+      resContent.value = data.value.content;
+    }
+    return data.value;
   } catch (error) {
     console.log(error);
   }
 };
 
-viewMemo();
+// メモの更新
+const updateMemo = handleSubmit(async () => {
+  try {
+    // const { signin } = await useFetch<SignInResponse>
+    console.log(memoTitle.value, memoDesc.value);
+    const { data } = await useFetch<AddMemoResponse>(
+      `${apiBaseUrl}/updateArtic/updateArticle`,
+      {
+        method: "POST",
+        headers: {
+          authorization: token,
+        },
+        body: JSON.stringify({
+          title: memoTitle.value,
+          content: memoDesc.value,
+          user_id: user_id,
+          memo_id: memo_id,
+        }),
+      }
+    );
+    console.log(data.value);
+    $router.push("/");
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+if (userStore.memo_id) {
+  console.log(`👹${userStore.memo_id}`);
+  viewMemo();
+}
+
+const addUp = () => {
+  if (userStore.memo_id) {
+    updateMemo();
+  } else {
+    addMemo();
+  }
+};
+
 // ページのタイトルなどを設定
 useHead({
   title: "メモ追加ページ",
@@ -111,7 +172,7 @@ useHead({
         </NuxtLink>
         <NuxtLink to="/">
           <button
-            @click.prevent="addMemo"
+            @click.prevent="addUp"
             class="save__btn"
             :disabled="isSubmitting"
           >
@@ -123,15 +184,13 @@ useHead({
       </div>
 
       <form>
-        <!-- v-modelディレクティブを使用して、inputの値をmemoTitleにバインド -->
-        <!-- Enterキーを押すとhandleEnter関数が実行され、次のテキストエリアにフォーカスが移動します -->
         <input
           class="memo__title"
           name="memo__ttl"
           type="text"
           id="memo__ttl"
-          placeholder="タイトルを入力してください"
           v-model="memoTitle"
+          placeholder="タイトルを入力してください"
         />
         <p>{{ titleErrorMessage }}</p>
 
@@ -139,6 +198,7 @@ useHead({
         <!-- ユーザーがここに入力した内容がmemoDescに保存されます -->
         <textarea
           v-model="memoDesc"
+          v-bind="resContent.value"
           name="memo__desc"
           id="Memo__desc"
           class="memo__desc"

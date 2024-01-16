@@ -12,7 +12,6 @@ export interface AddMemoResponse {
 
 export interface getResponse {
   memoId: Number;
-  _rawValue: string;
   title: string;
 }
 
@@ -24,4 +23,6 @@ export interface deleteResponse {
 export interface viewResponse {
   user_id: Number;
   memo_id: Number;
+  title: string;
+  content: string;
 }

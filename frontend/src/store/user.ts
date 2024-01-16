@@ -5,7 +5,7 @@ interface State {
   token: string;
   email: string;
   user_id: Number;
-  memo_id: Number;
+  memo_id?: number | null;
 }
 
 export const useUserStore = defineStore("user", {
@@ -18,7 +18,7 @@ export const useUserStore = defineStore("user", {
       token: "",
       email: "",
       user_id: 0,
-      memo_id: 0,
+      memo_id: null, // ここを変更
     };
   },
 

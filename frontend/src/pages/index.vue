@@ -39,6 +39,16 @@ const MemoDelete = () => {
   return deleteIcon;
 };
 
+const addMemoClick = () => {
+  if (userStore.memo_id) {
+    userStore.memo_id = null;
+    console.log(userStore.memo_id);
+    $router.push("/createArticle");
+  } else {
+    $router.push("/createArticle");
+  }
+};
+
 // DBからメモを取得
 const getMemo = async () => {
   try {
@@ -67,7 +77,9 @@ const handleMemoClick = (event: MouseEvent) => {
   const Memo_id = parseInt(clickedElement.id);
   userStore.memo_id = Memo_id;
   console.log(`index 72行目 ========= ${userStore.memo_id}`);
-  // $router.push("/createArticle");
+  if (deleteIcon.value) {
+    $router.push("/createArticle");
+  }
 };
 
 // メモの削除
@@ -128,9 +140,9 @@ getMemo();
     </div>
     <div class="center">
       <!-- メモの追加ボタン -->
-      <NuxtLink to="/createArticle" class="memoAddLink">
+      <div class="memoAddLink" @click="addMemoClick">
         <div class="memoAdd"></div>
-      </NuxtLink>
+      </div>
       <ul class="memoDB">
         <Memo :MemoList="contents" @click="handleMemoClick" />
       </ul>

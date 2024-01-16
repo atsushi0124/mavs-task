@@ -5,7 +5,7 @@ import authenticate from '../../middleware/authenticate.js';
 const router = express.Router();
 const articleService = new ArticleService();
 /**
- * メモ新規登録
+ * メモ削除
  */
 router.post('/deleteArticle', authenticate, async (req, res, next) => {
   try {

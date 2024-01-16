@@ -5,6 +5,7 @@ import articlesRouter from './articles/articles.router.js';
 import getArticlesRouter from './getArticle/getArticles.router.js';
 import deleteArticleRouter from './deleteArticle/deleteArticle.router.js';
 import viewArticleRouter from './viewArticle/viewArticles.router.js';
+import updateArticleRouter from './update/updateArticle.router.js';
 const router = express.Router();
 
 // ルーティング設定
@@ -14,5 +15,5 @@ router.use('/articles', articlesRouter);
 router.use('/getArticle', getArticlesRouter);
 router.use('/deleteArticle', deleteArticleRouter);
 router.use('/viewArticle', viewArticleRouter);
-
+router.use('/updateArtic', updateArticleRouter);
 export default router;
