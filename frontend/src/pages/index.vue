@@ -12,7 +12,7 @@ const apiBaseUrl = $config.public.apiBaseUrl;
 const userStore = useUserStore();
 const token = userStore.token;
 const user_id = userStore.user_id;
-console.log(`index 17行目 ========= ${userStore.memo_id}`);
+
 // 転送処理を行うためのフック
 const $router = useRouter();
 
@@ -35,6 +35,9 @@ const MemoDelete = () => {
     deleteIcon.value = false;
   } else {
     deleteIcon.value = true;
+    document.querySelectorAll(".description").forEach((el) => {
+      el.classList.remove("memoActive");
+    });
   }
   return deleteIcon;
 };
@@ -73,12 +76,23 @@ const getMemo = async () => {
 
 // メモをクリックするとクリックしたIDを取得
 const handleMemoClick = (event: MouseEvent) => {
+  // すべてのメモ要素からCSSクラスを削除
+  document.querySelectorAll(".description").forEach((el) => {
+    el.classList.remove("memoActive");
+  });
+
   const clickedElement = event.currentTarget as HTMLElement;
+  const childElement = clickedElement.querySelector(".description");
   const Memo_id = parseInt(clickedElement.id);
+
   userStore.memo_id = Memo_id;
-  console.log(`index 72行目 ========= ${userStore.memo_id}`);
+  console.log(`index 80行目 ========= ${userStore.memo_id}`);
   if (deleteIcon.value) {
     $router.push("/createArticle");
+  } else {
+    if (childElement) {
+      childElement.classList.add("memoActive");
+    }
   }
 };
 
@@ -203,9 +217,7 @@ getMemo();
   margin: 0 auto;
 
   // メモの追加ボタンの指定
-  .memoAddLink {
-    height: 140px;
-  }
+
   .memoAdd {
     width: 160px;
     height: 140px;
@@ -245,6 +257,11 @@ getMemo();
     flex-wrap: wrap;
     width: 80%;
     height: 200px;
+  }
+
+  .memoActive {
+    border: #000 solid 6px !important;
+    background-color: aquamarine;
   }
   .memo {
     display: flex;

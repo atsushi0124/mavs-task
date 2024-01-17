@@ -22,7 +22,7 @@ const $router = useRouter();
 // resTitle, resMemo_id, resContentをリアクティブな参照として定義
 const resTitle = ref("");
 const resMemo_id = ref();
-const resContent = ref("");
+const resContent = ref("内容を入力してください");
 
 // resTitleが変更されたときにmemoTitleを更新するウォッチャ
 watch(resTitle, (newTitle) => {
@@ -123,7 +123,7 @@ const updateMemo = handleSubmit(async () => {
     // const { signin } = await useFetch<SignInResponse>
     console.log(memoTitle.value, memoDesc.value);
     const { data } = await useFetch<AddMemoResponse>(
-      `${apiBaseUrl}/updateArtic/updateArticle`,
+      `${apiBaseUrl}/updateArticle/updateArticle`,
       {
         method: "POST",
         headers: {
@@ -183,7 +183,8 @@ useHead({
         <!-- .prevent修飾子は、クリックイベントのデフォルトの動作（この場合、フォームの送信）を防ぐ -->
       </div>
 
-      <form>
+      <form @submit.prevent="">
+        <p class="title-err">{{ titleErrorMessage }}</p>
         <input
           class="memo__title"
           name="memo__ttl"
@@ -192,10 +193,10 @@ useHead({
           v-model="memoTitle"
           placeholder="タイトルを入力してください"
         />
-        <p>{{ titleErrorMessage }}</p>
 
         <!-- v-modelディレクティブを使用して、textareaの値をmemoDescにバインド -->
         <!-- ユーザーがここに入力した内容がmemoDescに保存されます -->
+        <p class="content-err">{{ memoDescErrorMessage }}</p>
         <textarea
           v-model="memoDesc"
           v-bind="resContent.value"
@@ -204,7 +205,6 @@ useHead({
           class="memo__desc"
           placeholder="内容を入力してください"
         />
-        <p>{{ memoDescErrorMessage }}</p>
       </form>
     </div>
   </div>
@@ -260,6 +260,14 @@ form {
   .date {
     font-size: 15px;
     margin-bottom: 30px;
+  }
+  .title-err {
+    color: $colorRed;
+    margin-bottom: 5px;
+  }
+  .content-err {
+    color: $colorRed;
+    margin-bottom: 5px;
   }
   .memo__title {
     border: none;

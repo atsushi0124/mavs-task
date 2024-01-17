@@ -82,20 +82,18 @@ class ArticleService {
    * @param article_id 記事ID
    * @return 記事情報
    */
-  async updateArticle(user_id, memo_id, memo_title, memo_desc) {
+  async updateArticle(user_id, memo_id, title, content) {
     try {
       const articleData = {
-        title: memo_title,
-        content: memo_desc,
+        title: title,
+        content: content,
       };
-
       const [updatedRows] = await db.Articles.update(articleData, {
         where: {
           id: memo_id,
           author_id: user_id,
         },
       });
-
       console.log(`${updatedRows} rows updated.`);
       return updatedRows;
     } catch (error) {

@@ -15,5 +15,5 @@ router.use('/articles', articlesRouter);
 router.use('/getArticle', getArticlesRouter);
 router.use('/deleteArticle', deleteArticleRouter);
 router.use('/viewArticle', viewArticleRouter);
-router.use('/updateArtic', updateArticleRouter);
+router.use('/updateArticle', updateArticleRouter);
 export default router;
